@@ -31,7 +31,7 @@ merged_chest_fltr.pkl</br>
 4. MLP_classifier.ipynb - Open in Google Colab: [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://drive.google.com/file/d/1z9Qw9MAhgAC3c4l2s9sk-9B9NQ4zc1Z0/view?usp=sharing) </br></br>
 5. RandomForest_classifier.ipynb - Open in Google Colab: [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://drive.google.com/file/d/1Crn0Z9yG6eO3YtjfrSwJW4bRm7Hju9Mf/view?usp=sharing) </br></br>
 6. BNN_classifier.ipynb - Open in Google Colab: [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://drive.google.com/file/d/1NXbY48sSe5ko3Oofvu9hiLoLIrYn34f6/view?usp=sharing) </br></br>
-7. AutoKeras_classifier.ipynb - Open in Google Colab: [![Open In Colab](https://drive.google.com/file/d/1-dYZwtbiMvh9DMa-M2oDVugJ0yhtvmO7/view?usp=sharing)
+7. AutoKeras_classifier.ipynb - Open in Google Colab: [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://drive.google.com/file/d/1-dYZwtbiMvh9DMa-M2oDVugJ0yhtvmO7/view?usp=sharing)
 
 
 
