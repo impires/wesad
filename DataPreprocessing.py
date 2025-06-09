@@ -9,8 +9,11 @@ import pandas as pd
 import numpy as np
 import seaborn as sns
 from scipy import stats
+from IPython import get_ipython
 
 import matplotlib.pyplot as plt
+
+
 get_ipython().run_line_magic('matplotlib', 'inline')
 
 
@@ -164,7 +167,7 @@ def merge_chest_data():
 
 
 def filter_chest_data():
-    df = pd.read_pickle(("merged_chest.pkl"))
+    df = pd.read_pickle(("data/merged_chest.pkl"))
     df_fltr = df[df["label"].isin([1,2,3])]
     df_fltr = df_fltr[df_fltr["temp"]>0]
     pd.DataFrame(df_fltr, columns=chest_columns).to_pickle("data/merged_chest_fltr.pkl")
