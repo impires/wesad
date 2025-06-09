@@ -1,22 +1,23 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-
+import os.path
 import pandas as pd
 import numpy as np
 from scipy import stats
 from sklearn.preprocessing import StandardScaler
-from keras.layers import Input, Dense, Flatten, Reshape, BatchNormalization
-from keras.layers import Conv1D, UpSampling1D, MaxPooling1D, AveragePooling1D
-from keras.models import Model, Sequential
-from keras.layers.advanced_activations import ReLU
-from keras.optimizers import RMSprop
+from tensorflow.keras.layers import (Input, Dense, Flatten, Reshape, BatchNormalization, 
+                                     Conv1D, UpSampling1D, MaxPooling1D, AveragePooling1D, ReLU)
+from tensorflow.keras.models import Model, Sequential
+from tensorflow.keras.optimizers import RMSprop
 import tensorflow as tf
 
 
-C_PATH = "data/merged_chest_fltr.pkl"
-W1_PATH = "data/subj_merged_bvp_w.pkl"
-W2_PATH = "data/subj_merged_eda_temp_w.pkl"
+DRIVE_DATA_PATH = "/content/drive/MyDrive/Colab Notebooks/wesad-main/data/"
+
+C_PATH = DRIVE_DATA_PATH + 'merged_chest_fltr.pkl'
+W1_PATH = DRIVE_DATA_PATH + 'subj_merged_bvp_w.pkl'
+W2_PATH = DRIVE_DATA_PATH + 'subj_merged_eda_temp_w.pkl'
 feat_sf700 = ['ecg', 'emg', 'eda', 'temp', 'resp']
 feat_sf64 = ['bvp']
 feat_sf4 = ['w_eda', 'w_temp']
@@ -97,18 +98,21 @@ class autoencoder:
         scores = []
 
         for sid in self.ids:
-            x_train, y_train, x_test, y_test, yk, yk_test = self.get_data (test_id =sid, 
-                                                                       v_batch_size=sf_chest, 
-                                                                       v_feat_list=feat_sf700, 
-                                                                       df=self.df_c)
-
-            encoder, model = self.autoenc_model_chest(v_batch_size=sf_chest, n_feat=len(feat_sf700))
-            model.compile(optimizer=RMSprop(lr=0.00025), loss="mse")
-            history = model.fit(x_train, x_train, epochs=10)
             m_name = "trained_models/c/encoder_loso"+str(sid)+".h5"
 
-            encoder.save(m_name)
-            print("saved ", m_name)
+            if not os.path.exists(m_name):
+                x_train, y_train, x_test, y_test, yk, yk_test = self.get_data (test_id =sid, 
+                                                                        v_batch_size=sf_chest, 
+                                                                        v_feat_list=feat_sf700, 
+                                                                        df=self.df_c)
+
+                encoder, model = self.autoenc_model_chest(v_batch_size=sf_chest, n_feat=len(feat_sf700))
+                model.compile(optimizer=RMSprop(learning_rate=0.00025), loss="mse")
+                history = model.fit(x_train, x_train, epochs=10)
+                
+
+                encoder.save(m_name)
+                print("saved ", m_name)
             
     def autoenc_model_w1(self, v_batch_size, n_feat):
     
@@ -192,14 +196,14 @@ class autoencoder:
                                                                            df=self.df_w2)
 
             encoderw1, modelw1 = self.autoenc_model_w1(v_batch_size=sf_BVP, n_feat=len(feat_sf64))
-            modelw1.compile(optimizer=RMSprop(lr=0.00025), loss="mse")
+            modelw1.compile(optimizer=RMSprop(learning_rate=0.00025), loss="mse")
             history = modelw1.fit(x_trainw1, x_trainw1, epochs=4)
 
             emb_trainw1 = encoderw1.predict(x_trainw1)
             emb_testw1 = encoderw1.predict(x_testw1)
 
             encoderw2, modelw2 = self.autoenc_model_w2(v_batch_size=sf_EDA, n_feat=len(feat_sf4))
-            modelw2.compile(optimizer=RMSprop(lr=0.00025), loss="mse")
+            modelw2.compile(optimizer=RMSprop(learning_rate=0.00025), loss="mse")
             history = modelw2.fit(x_trainw2, x_trainw2, epochs=4)
 
             emb_trainw2 = encoderw2.predict(x_trainw2)
@@ -226,8 +230,8 @@ class autoencoder:
             emb_train_all = np.concatenate ((emb_train[:last_inx_train], emb_trainw1[:last_inx_train], emb_trainw2[:last_inx_train], yk[:last_inx_train]), axis=1)
             emb_test_all = np.concatenate ((emb_test[:last_inx_test], emb_testw1[:last_inx_test], emb_testw2[:last_inx_test], yk_test[:last_inx_test]), axis=1)
 
-            train_feat_file = "features/train/feat_loso"+str(sid)+".pkl"
-            test_feat_file = "features/test/feat_loso"+str(sid)+".pkl"
+            train_feat_file = "/content/drive/MyDrive/Colab Notebooks/wesad-main/features/train/feat_loso"+str(sid)+".pkl"
+            test_feat_file = "/content/drive/MyDrive/Colab Notebooks/wesad-main/features/test/feat_loso"+str(sid)+".pkl"
             pd.DataFrame(emb_train_all).to_pickle(train_feat_file)
             pd.DataFrame(emb_test_all).to_pickle(test_feat_file)
     
